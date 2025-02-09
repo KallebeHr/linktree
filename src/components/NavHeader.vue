@@ -86,11 +86,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 1rem;
     flex-direction: column;
     overflow: hidden;
     padding: 10px;
-    height: 55vh;
+    height: auto;
   }
   
   h2 {
