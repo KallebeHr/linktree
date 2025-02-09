@@ -1,16 +1,36 @@
 <template>
   <div class="container">
     <!-- Lista de categorias -->
-    <ul>
-      <li
-        v-for="(category, index) in categories"
-        :key="index"
-        @click="selectCategory(category)"
-        :class="{ active: selectedCategory === category }"
+    <div class="categories-container">
+      <!-- Swiper para categorias em telas menores -->
+      <swiper
+        v-if="isMobile"
+        :slidesPerView="2.5"
+        :spaceBetween="10"
+        class="categories-swiper"
       >
-        {{ category }}
-      </li>
-    </ul>
+        <swiper-slide
+          v-for="(category, index) in categories"
+          :key="index"
+          @click="selectCategory(category)"
+          :class="{ active: selectedCategory === category }"
+        >
+          {{ category }}
+        </swiper-slide>
+      </swiper>
+
+      <!-- Lista horizontal para telas maiores -->
+      <ul v-else>
+        <li
+          v-for="(category, index) in categories"
+          :key="index"
+          @click="selectCategory(category)"
+          :class="{ active: selectedCategory === category }"
+        >
+          {{ category }}
+        </li>
+      </ul>
+    </div>
 
     <!-- Exibir produtos filtrados por categoria -->
     <swiper
@@ -31,7 +51,7 @@
       <swiper-slide v-for="(product, index) in filteredProducts" :key="index">
         <div class="product-card">
           <div class="product-image">
-            <div class="quadrado"></div>
+            .quadrado
           </div>
           <div class="product-name">
             <h3>{{ product.name }}</h3>
@@ -42,85 +62,65 @@
   </div>
 </template>
 
-<script>
-// Import Swiper Vue.js components
+<script setup>
+// Importações
 import { Swiper, SwiperSlide } from 'swiper/vue';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
-
-// Import required modules
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import { useProductStore } from '@/stores/productStore'; // Importe o store
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 
-export default {
-  components: {
-    Swiper,
-    SwiperSlide,
+// Configurações do Swiper
+const modules = [Autoplay, Pagination, Navigation];
+
+// Lista de categorias
+const categories = [
+  'Todos',
+  'Presentes',
+  'Casais',
+  'Eletronicos',
+  'Beleza',
+  'Papelaria',
+  'Casa e Construção',
+  'Esportes e Lazer',
+];
+
+// Configurações de responsividade
+const breakpoints = {
+  320: {
+    slidesPerView: 2.5,
   },
-  setup() {
-    // Lista de categorias
-    const categories = [
-      'Todos',
-      'Presentes',
-      'Casais',
-      'Eletronicos',
-      'Beleza',
-      'Papelaria',
-      'Casa e Construção',
-      'Esportes e Lazer',
-    ];
-
-    // Dados fictícios dos produtos
-    const products = [
-      { name: 'Produto 1', image: 'https://via.placeholder.com/200', category: 'Eletronicos' },
-      { name: 'Produto 2', image: 'https://via.placeholder.com/200', category: 'Beleza' },
-      { name: 'Produto 3', image: 'https://via.placeholder.com/200', category: 'Presentes' },
-      { name: 'Produto 4', image: 'https://via.placeholder.com/200', category: 'Casais' },
-      { name: 'Produto 5', image: 'https://via.placeholder.com/200', category: 'Papelaria' },
-      { name: 'Produto 6', image: 'https://via.placeholder.com/200', category: 'Casa e Construção' },
-      { name: 'Produto 7', image: 'https://via.placeholder.com/200', category: 'Esportes e Lazer' },
-      { name: 'Produto 8', image: 'https://via.placeholder.com/200', category: 'Eletronicos' },
-    ];
-
-    // Estado para a categoria selecionada
-    const selectedCategory = ref('Todos');
-
-    // Função para selecionar a categoria
-    const selectCategory = (category) => {
-      selectedCategory.value = category;
-    };
-
-    // Computed para filtrar os produtos com base na categoria selecionada
-    const filteredProducts = computed(() => {
-      if (selectedCategory.value === 'Todos') {
-        return products;
-      }
-      return products.filter((product) => product.category === selectedCategory.value);
-    });
-
-    // Configurações de responsividade
-    const breakpoints = {
-      320: {
-        slidesPerView: 2.5, // 2,5 slides no celular
-      },
-      768: {
-        slidesPerView: 4, // 4 slides no desktop
-      },
-    };
-
-    return {
-      modules: [Autoplay, Pagination, Navigation],
-      categories,
-      products,
-      breakpoints,
-      selectedCategory,
-      selectCategory,
-      filteredProducts,
-    };
+  768: {
+    slidesPerView: 4,
   },
 };
+
+// Acesse o store
+const productStore = useProductStore();
+
+// Acesse os produtos filtrados e a categoria selecionada
+const filteredProducts = computed(() => productStore.filteredProducts);
+const selectedCategory = computed(() => productStore.selectedCategory);
+
+// Função para selecionar a categoria
+const selectCategory = (category) => {
+  productStore.setSelectedCategory(category);
+};
+
+// Verificar se é mobile
+const isMobile = ref(window.innerWidth <= 768);
+
+// Atualizar o estado de isMobile ao redimensionar a janela
+const updateIsMobile = () => {
+  isMobile.value = window.innerWidth <= 768;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', updateIsMobile);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateIsMobile);
+});
 </script>
 
 <style scoped>
@@ -132,13 +132,17 @@ export default {
   flex-direction: column;
 }
 
+.categories-container {
+  width: 98%;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
 ul {
   list-style: none;
   display: flex;
-  margin-top: 1rem;
   justify-content: space-between;
   align-items: center;
-  width: 90%;
   background-color: rgb(255, 255, 255);
   border-radius: 20px;
   padding: 10px;
@@ -158,6 +162,28 @@ li {
 li.active {
   background-color: #f6b519;
   color: white;
+}
+
+.categories-swiper {
+  width: 100%;
+  padding: 10px;
+}
+
+.categories-swiper .swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+    
+}
+
+.categories-swiper .swiper-slide.active {
+  color: #f6b519;
+  background-color: rgb(255, 255, 255);
+
 }
 
 .product-card {
