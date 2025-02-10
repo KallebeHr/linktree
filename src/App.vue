@@ -5,7 +5,8 @@
       <NavHeader />
     </header>
     <div class="body">
-      <Center />
+      <!-- <Center /> -->
+      <Footer />
     </div>
   </v-app>
 </template>
@@ -14,6 +15,7 @@
 import Center from './components/Center.vue';
 import Header from './components/Header.vue';
 import NavHeader from './components/NavHeader.vue';
+import Footer from './components/Footer.vue';
   //
 </script>
 <style scoped>

@@ -18,7 +18,7 @@
     display:flex;
     justify-content: center;
     align-items: center;
-    height: 15vh;
+    height: 20vh;
     color: rgb(75, 88, 88);
     font-weight: 800;
     }
