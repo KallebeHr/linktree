@@ -29,7 +29,8 @@
             <div class="product-price">
               <p>{{ product.price }}</p>
             </div>
-            <button class="buy-button">Comprar</button>
+            <a :href="product.link" target="_blank" class="buy-button">Comprar</a>
+
           </div>
         </div>
       </swiper-slide>
@@ -46,9 +47,22 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-
 // Import required modules
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+
+
+import espelho from "../assets/IMG/espelho.png"
+import umidificador from "../assets/IMG/umidificador.png"
+import videogame from "../assets/IMG/videogame.png"
+import cozinha from "../assets/IMG/cozinha.png"
+import ml from "../assets/IMG/400ml.png"
+import Ferramentas from "../assets/IMG/Ferramentas.png"
+import tapete from "../assets/IMG/tapete.png"
+
+
+
+
+
 
 export default {
 components: {
@@ -56,16 +70,15 @@ components: {
   SwiperSlide,
 },
 setup() {
-  // Dados fictícios dos produtos
+  
   const products = [
-    { name: 'Produto 1', image: 'https://via.placeholder.com/200', price: 'R$ 99,99' },
-    { name: 'Produto 2', image: 'https://via.placeholder.com/200', price: 'R$ 149,99' },
-    { name: 'Produto 3', image: 'https://via.placeholder.com/200', price: 'R$ 199,99' },
-    { name: 'Produto 4', image: 'https://via.placeholder.com/200', price: 'R$ 249,99' },
-    { name: 'Produto 5', image: 'https://via.placeholder.com/200', price: 'R$ 299,99' },
-    { name: 'Produto 6', image: 'https://via.placeholder.com/200', price: 'R$ 349,99' },
-    { name: 'Produto 7', image: 'https://via.placeholder.com/200', price: 'R$ 399,99' },
-    { name: 'Produto 8', image: 'https://via.placeholder.com/200', price: 'R$ 449,99' },
+  { name: 'Espelho Redondo Adnet 30cm Com Alça', image: espelho, price: 'R$ 34,90', link: 'https://s.shopee.com.br/8fDPxvD5MX'},
+    { name: 'Mini Umidificador Difusor Aromatizador', image: umidificador, price: 'R$ 16,99', link: 'https://s.shopee.com.br/4VNr0RK6Xc' },
+    { name: 'Videogame Stick 10mil 2 Controles Sem Fio', image: videogame, price: 'R$ 93,99', link: 'https://s.shopee.com.br/1B7P2YvX6o' },
+    { name: 'Torneira Gourmet Com Filtro Slim para Cozinha', image: cozinha, price: 'R$ 108,88', link: 'https://s.shopee.com.br/20gW295aLz' },
+    { name: '400ML 6 Lâminas Espremedor Elétrico Mini Liquidificador', image: ml, price: 'R$ 32,88', link: 'https://s.shopee.com.br/vReiOjs0' },
+    { name: 'Ferramentas 46 Peças Jogo De Soquetes', image:Ferramentas , price: 'R$ 33,50', link: 'https://s.shopee.com.br/6V8vOqdY12' },
+    { name: 'Tapete Banheiro Antiderrapante Absorvente de Secagem Rápida', image:tapete , price: 'R$ 19,00', link: 'https://s.shopee.com.br/6KpVCew7EQ' },
   ];
 
   // Configurações de responsividade
@@ -143,18 +156,21 @@ border-radius: 15px;
 }
 
 .product-image {
-width: 100%;
-height: 150px;
-overflow: hidden;
-display: flex;
-justify-content: center;
-align-items: center;
+  width: 100%; /* Garante que o contêiner ocupe todo o espaço disponível */
+  height: 150px; /* Altura fixa para o contêiner */
+  overflow: hidden; /* Evita que a imagem ultrapasse o contêiner */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  z-index: 2; /* Coloca a imagem acima do pseudo-elemento ::after */
 }
 
 .product-image img {
-width: 100%;
-height: 100%;
-object-fit: cover;
+  width: 100%; /* A imagem ocupa 100% da largura do contêiner */
+  height: 100%; /* A imagem ocupa 100% da altura do contêiner */
+  object-fit: cover; /* Garante que a imagem cubra o contêiner sem distorcer */
+  border-radius: 10px;
 }
 
 .product-info {
@@ -183,6 +199,7 @@ border-radius: 5px;
 cursor: pointer;
 font-weight: bold;
 margin-top: 10px;
+text-decoration: none;
 }
 
 .buy-button:hover {
